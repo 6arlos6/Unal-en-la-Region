@@ -36,5 +36,10 @@ def unir_regiones(gdf_municipios, df_sub_reg, departamento_name, tf_save = False
 
 
 if __name__ == '__main__':
-    print("Hola")
+    path_geoJson = os.path.join("Tarea_1_Geo_Ref","data_GeoJsons","example.geojson")
+    gdf_municipios = gpd.read_file(path_geoJson)
+
+    path_to_save = os.path.join("Tarea_1_Geo_Ref","data_GeoJsons","archivo_unificado.geojson")
+    df_sub_reg = 1;
+    #gdf_subregiones = unir_regiones(gdf_municipios, df_sub_reg, departamento_name)
 
