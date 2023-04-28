@@ -4,7 +4,8 @@ import os
 from shapely.ops import cascaded_union
 
 # cargar:
-path_geoJson = os.path.join("Tarea_1_Geo_Ref","data_GeoJsons","map.geojson")
+# data_GeoJsons\map.geojson
+path_geoJson = os.path.join("data_GeoJsons","map.geojson")
 # read file:
 gdf = gpd.read_file(path_geoJson)
 # poner nombre a las regiones:
@@ -27,5 +28,5 @@ gdf["geometry"] = gdf[0]
 # eliminar col por defecto que se creo al unir las regiones
 gdf  = gdf.drop(columns=0)
 # export:
-path_to_save = os.path.join("Tarea_1_Geo_Ref","data_GeoJsons","archivo_unificado.geojson")
+path_to_save = os.path.join("data_GeoJsons","archivo_unificado.geojson")
 gdf.to_file(path_to_save, driver='GeoJSON')
