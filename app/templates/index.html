@@ -1,0 +1,120 @@
+<html dir="ltr">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+    <title>Custom Line Chart | ArcGIS API for JavaScript 4.24</title>
+
+    <!-- Load the Chart.js library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js" integrity="sha512-sW/w8s4RWTdFFSduOTGtk4isV1+190E/GghVffMA9XczdJ2MDzSzLEubKAs5h0wzgSJOQTRYyaz73L3d6RtJSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- ArcGis Api-->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.24/"></script>
+
+    <script src="script.js"></script>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <!-- OJO -->
+    <script> 
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/PopupTemplate",
+            "esri/popup/content/CustomContent",
+            "esri/layers/GeoJSONLayer",
+        ], (Map, MapView, FeatureLayer, PopupTemplate, CustomContent,GeoJSONLayer) => {
+            // setup the map
+            const map = new Map({
+                basemap: "hybrid",
+            });
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [ -75.68323997743963, 5.261287383930011],
+                zoom: 6,
+                popup: {
+                    dockEnabled: true,
+                    dockOptions: {
+                        buttonEnabled: false,
+                        breakpoint: false,
+                    },
+                },
+            });
+            const featureLayer = new GeoJSONLayer({
+              url: "/data"
+          
+        });
+            let customContent = new CustomContent({
+                outFields: ["*"],
+                creator: (event) => {
+                    console.log("in custom content");
+                    // Call method to create chart with your own information.
+                    // Use event.graphic value to reference current feature.
+                    let canvas = createChart();
+                    //const div = document.getElementById("chart-div");
+                    let div = document.createElement("div");
+                    div.appendChild(canvas);
+                    // Return the div element containing the chart.
+                    return div;
+                },
+            });
+            // Create the PopupTemplate and reference custom content element.
+            const template = new PopupTemplate({
+                outFields: ["*"],
+                title: "Información Socioeconómica",
+                content: [customContent],
+            });
+            featureLayer.popupTemplate = template;
+            map.add(featureLayer);
+            // Create the custom chart using ChartJS library.
+            // Example here: https://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/#2-line-chart
+            let lineChart;
+
+            function createChart() {
+                let canvas = document.createElement("canvas");
+                canvas.style.width = "100%";
+                canvas.style.height = "100%";
+                canvas.width = 416;
+                canvas.height = 208;
+                const ctx = canvas.getContext("2d");
+                const config = {
+                            type: 'bar',
+                            data: {
+                                labels: ["1", "2", "3", "4", "5", "6"],
+                                datasets: [{
+                                  label: "Estrato",
+                                  data: [20, 40, 30, 35, 30, 20],
+                                  backgroundColor: ['yellow', 'aqua', 'pink', 'lightgreen', 'lightblue', 'gold'],
+                                  borderColor: ['red', 'blue', 'fuchsia', 'green', 'navy', 'black'],
+                                  borderWidth: 2,
+                                }],
+                            },
+                            options: {
+                                responsive: false,
+                            },
+                          };
+                console.log("creating chart");
+                lineChart = new Chart(canvas, config);
+                return canvas;
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <h1>Hola Mundo, UNAL en las REGIONES</h1>
+    <div id="viewDiv"></div>
+</body>
+
+</html>
